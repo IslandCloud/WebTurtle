@@ -1,0 +1,139 @@
+body,
+html{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    margin:0;
+    padding:0;
+    font-size:20px;
+    font-family: Verdana;
+}
+
+body h1{
+    text-align:center;
+}
+
+#top{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 45px;
+    overflow: visible;
+    background: deepskyblue;
+}
+
+#leftColumn{
+    margin: 45px 0 0 175px;
+    float: left;
+}
+
+#graphCanvas{
+    position: absolute;
+    background: #fff;
+    border: 3px solid red;
+
+}
+
+#turtleCanvas{
+    position: absolute;
+    border: 3px solid red;
+
+}
+
+#gridCanvas{
+    position: absolute;
+    border: 3px solid red;
+    opacity: 0.4;
+}
+
+#rightColumn{
+    margin: 45px auto;
+    float: right;
+    width: 50%;
+    z-index:-1;
+    overflow: hidden;
+}
+
+#html2canvas{
+    position: absolute;
+    right: 10px;
+    top: 700px;
+}
+
+#topleft, #topright{
+    padding: 0 12px;
+    vertical-align: center;
+}
+
+#topright{
+    text-align: right;
+    overflow: visible;
+    width: 1%;
+}
+
+#topright button{
+    border: none;
+    background-color: #ffffff;
+    -moz-appearance: none;
+    box-shadow: 0 0 7px gray;
+    font-size: 16px;
+    margin: 5px;
+    display: inline-block;
+    line-height: 24px;
+    vertical-align: middle;
+    height: 28px;
+    padding: 2px 8px;
+    color: #222222;
+    border-radius: 8px;
+    font-family: Verdana;
+    cursor: pointer;
+}
+
+#rightColumn button{
+    border: none;
+    background-color: #ffffff;
+    -moz-appearance: none;
+    box-shadow: 0 0 7px gray;
+    font-size: 16px;
+    margin: 5px;
+    display: inline-block;
+    line-height: 24px;
+    vertical-align: middle;
+    height: 28px;
+    padding: 2px 8px;
+    color: #222222;
+    border-radius: 8px;
+    font-family: Verdana;
+    cursor: pointer;
+}
+
+button:hover{
+    opacity: 0.8;
+}
+
+#rightColumn #buttons input, #doNumber, #clearNumber, #saveNumber{
+    width: 50px;
+    text-align: center;
+    position: relative;
+    bottom: 2px;
+}
+
+#repeatTime{
+    width: 50px;
+    text-align: center;
+    margin-left: 10px;
+    position: relative;
+    bottom: 2px;
+}
+
+#repeatBox p, #functionBox p{
+    font-size: 80%;
+}
+
+#functions button{
+    background-color: lightgreen;
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Web Turtle</title>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/turtle.css">
+    <script type="text/javascript" src="/javascripts/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="/javascripts/html2canvas.min.js"></script>
+
+</head>
+
+<body>
+<div id="page">
+    <table id="top">
+        <tbody>
+        <tr>
+            <td id="topleft">
+
+            </td>
+            <td id="topright">
+                <nobr id="buttonbar">
+                    <button id="screenshot">Screenshot</button>
+                    <button id="loginButton" onclick="location.href='/login' ">Login</button>
+                    <button id="guide">Guide</button>
+                </nobr>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="leftColumn">
+        <h4>Turtle Canvas</h4>
+        <canvas id="graphCanvas" width="500" height="500"></canvas>
+        <canvas id="turtleCanvas" width="500" height="500"></canvas>
+        <canvas id="gridCanvas" width="500" height="500"></canvas>
+    </div>
+    <div id="rightColumn">
+        <div id="buttons">
+            <h4>Buttons</h4>
+            <button id="reset">Reset</button>
+            <button id="left">Left</button><input id="leftValue" type="text" value="90">
+            <button id="right">Right</button><input id="rightValue" type="text" value="90">
+            <button id="forward">Forward</button><input id="forwardValue" type="text" value="50">
+            <button id="yellow" style="background-color: yellow">Yellow</button>
+            <button id="red" style="background-color: red">Red</button>
+            <button id="penDown">Pen Down</button>
+            <button id="penUp">Pen Up</button>
+            <button id="hideTurtle">Hide Turtle</button>
+            <button id="showTurtle">Show Turtle</button>
+        </div>
+        <div id="repeatBox">
+            <h4>Repeat<input id="repeatTime" type="text" value="1"></h4>
+            <button id="repeatStart">Start</button>
+            <button id="repeatEnd">End</button>
+            <button id="repeatDo">Do</button>
+            <button id="repeatClear">Clear</button>
+            <button id="repeatDelete">Delete</button>
+            <p id="repeatRecord"></p>
+        </div>
+        <div id="functionBox">
+            <h4 id="functions">Function
+                <button id="function1">Func 1</button>
+                <button id="function2">Func 2</button>
+                <button id="function3">Func 3</button>
+                <button id="function4">Func 4</button>
+            </h4>
+            <button id="functionStart">Start</button>
+            <button id="functionEnd">End</button>
+            <button id="functionSave">Save in</button>
+            <input id="saveNumber" type="text" value="1">
+            <button id="functionDo">Do</button>
+            <input id="doNumber" type="text" value="1">
+            <button id="functionClear">Clear</button>
+            <input id="clearNumber" type="text" value="1">
+            <button id="functionDelete">Delete</button>
+            <p id="functionRecord"></p>
+        </div>
+        <div id="commandBox">
+            <h4>Command</h4>
+            <input type="text" id="command" />
+            <button id="commandDo">Do</button>
+        </div>
+    </div>
+
+    <div id="html2canvas"></div>
+
+</div>
+</body>
+
+<script type="text/javascript" src="/javascripts/turtle.js"></script>
+
+</html>
