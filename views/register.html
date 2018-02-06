@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+    <link type="text/css" rel="stylesheet" href="/stylesheets/login.css">
+</head>
+
+<body>
+
+    <h2>Register</h2>
+    <form action="/register" method="POST" role="form">
+        <div class="imgContainer">
+            <img src="/images/loginlogo.png" alt="Avater" class="loginLogo">
+        </div>
+        <div class="container">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Enter Username">
+
+            <label>Password</label>
+            <input type="password" name='pwd1' placeholder="Enter Password">
+
+            <label>Password Again</label>
+            <input type="password" name="pwd2" placeholder="Input Password Again">
+
+            <button type="submit">Register</button>
+        </div>
+
+        <div class="container" style="background-color:#f1f1f1">
+            <button type="button" class="backButton" onclick="location.href='/' ">Back</button>
+            <button type="button" class="backButton" onclick="location.href='/login' ">Login here</button>
+            <span class="psw">Forgot <a href="#">password?</a></span>
+        </div>
+    </form>
+
+</body>
+</html>
