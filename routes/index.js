@@ -11,11 +11,11 @@ var pool = mysql.createPool(dbConfig.mysql);
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index.html');
+    res.render('index.html', {username: ''});
 });
 
 router.get('/index', function(req, res) {
-    res.render('index.html');
+    res.render('index.html', {username: ''});
 });
 
 
@@ -40,7 +40,9 @@ router.post('/login', function(req, res){
                 res.json('username not exist');
             }else{
                 if(result[0]['pwd'] === data.pwd){
-                    res.json('login succeed!');
+                    res.render('index', {username: 'Hello, ' + data.username})
+                    //res.json('login succeed!');
+                    //console.log('login succeed!');
                 }else{
                     res.json('password not correct!');
                 }
