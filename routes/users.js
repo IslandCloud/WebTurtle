@@ -34,4 +34,19 @@ router.get('/addUser', function(req, res, next){
     });
 });
 
+router.get('/getUser', function(req, res, next){
+    pool.getConnection(function(err, connection){
+        //var param = req.query || req.params;
+        connection.query(userSQL.getUserById, req.query.id, function(err, result){
+            if(result){
+                result = {
+                    msg: 'find user!'
+                };
+            }
+            responseJSON(res, result);
+            connection.release();
+        });
+    });
+});
+
 module.exports = router;

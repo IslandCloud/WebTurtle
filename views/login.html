@@ -10,16 +10,16 @@
 <body>
 
     <h2>Login</h2>
-    <form>
+    <form action="/login" method="POST" role="form">
         <div class="imgContainer">
             <img src="/images/loginlogo.png" alt="Avater" class="loginLogo">
         </div>
         <div class="container">
             <label><b>Username</b></label>
-            <input type="text" placeholder="Enter Username">
+            <input type="text" name="username" placeholder="Enter Username">
 
             <label><b>Password</b></label>
-            <input type="password" placeholder="Enter Password">
+            <input type="password" name="pwd" placeholder="Enter Password">
 
             <button type="submit">Login</button>
         </div>
