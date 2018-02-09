@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-
+    <script type="text/javascript" src="/javascripts/jquery-1.6.4.min.js"></script>
     <link type="text/css" rel="stylesheet" href="/stylesheets/login.css">
 </head>
 
 <body>
+
+
 
     <h2>Register</h2>
     <form action="/register" method="POST" role="form">
@@ -15,24 +17,31 @@
             <img src="/images/loginlogo.png" alt="Avater" class="loginLogo">
         </div>
         <div class="container">
-            <label>Username</label>
-            <input type="text" name="username" placeholder="Enter Username">
+            <label><b>Username</b></label>
+            <input type="text" name="username" id="username" placeholder="Enter Username">
 
-            <label>Password</label>
+            <label><b>Password</b></label>
             <input type="password" name='pwd1' placeholder="Enter Password">
 
-            <label>Password Again</label>
+            <label><b>Password Again</b></label>
             <input type="password" name="pwd2" placeholder="Enter Password Again">
 
-            <button type="submit">Register</button>
+            <label><b>Secret Code</b></label>
+            <input type="text" name="secret" placeholder="Enter the Secret Code">
+
+            <p id="error_msg"><%= register_error%></p>
+
+            <button id="register_submit" type="submit">Register</button>
         </div>
 
         <div class="container" style="background-color:#f1f1f1">
             <button type="button" class="backButton" onclick="location.href='/' ">Back</button>
             <button type="button" class="backButton" onclick="location.href='/login' ">Login here</button>
-            <span class="psw">Forgot <a href="#">password?</a></span>
+
         </div>
     </form>
+
+
 
 </body>
 </html>

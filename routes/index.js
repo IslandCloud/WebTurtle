@@ -8,7 +8,6 @@ var userSQL = require('../db/UserSQL');
 var pool = mysql.createPool(dbConfig.mysql);
 
 
-
 /* GET home page. */
 router.get('/', function(req, res) {
     res.render('index.html', {username: ''});
@@ -21,30 +20,43 @@ router.get('/index', function(req, res) {
 
 /* Get login page*/
 router.get('/login', function(req, res){
-    res.render('login.html');
+    res.render('login', {login_error: ""});
 });
 
 router.post('/login', function(req, res){
     var data = req.body;
 
     if(data.username.length < 1){ //Empty username
-        return res.json('please enter your username');
+        res.render('login', {login_error: "please enter your username"});
+        return;
     }else if(data.pwd.length < 1){ //Empty password
-        return res.json('please enter your password');
+        res.render('login', {login_error: "please enter your password"});
+        return;
     }
 
     pool.getConnection(function(err, connection){
-        connection.query(userSQL.getUserByUsername, data.username, function(err, result){
-            if(typeof result === 'undefined' || result.length === 0){ //Username not exist
-                connection.release();
-                res.json('username not exist');
-            }else{
+        connection.query(userSQL.get_student_by_username, data.username, function(err, result){
+            if(typeof result === 'undefined' || result.length === 0){ //Username not exist in student table
+
+                connection.query(userSQL.get_teacher_by_username, data.username, function(err, result){ //Find in teacher
+                    if(typeof result === 'undefined' || result.length === 0){ //Username not exist in both tables
+                        //connection.release();
+                        res.render('login', {login_error: "username does not exist"});
+                    }else{ //Username exists in teacher table
+                        if(result[0]['pwd'] === data.pwd){
+                            res.render('index', {username: 'Hello, ' + data.username});
+                        }else{
+                            res.render('login', {login_error: "password not correct!"});
+                        }
+                    }
+
+                });
+
+            }else{ //Username exists in student table
                 if(result[0]['pwd'] === data.pwd){
                     res.render('index', {username: 'Hello, ' + data.username})
-                    //res.json('login succeed!');
-                    //console.log('login succeed!');
                 }else{
-                    res.json('password not correct!');
+                    res.render('login', {login_error: "password not correct!"});
                 }
             }
             connection.release();
@@ -57,7 +69,8 @@ router.post('/login', function(req, res){
 
 /* Get register page*/
 router.get('/register', function(req, res){
-    res.render('register.html');
+    //res.render('register.html');
+    res.render('register', {register_error: ''});
 });
 
 router.post('/register', function(req, res){
@@ -65,51 +78,68 @@ router.post('/register', function(req, res){
         var data = req.body;
 
         if(data.username.length < 1){ //Empty username
-            return res.json('Username cannot be empty!');
-            //res.redirect('/register');
+            res.render('register', {register_error: 'Username cannot be empty'});
+            return;
         }else if(data.pwd1.length < 1){
-            return res.json('Password cannot be empty!');
+            res.render('register', {register_error: 'Password cannot be empty'});
+            return;
         }else if(data.pwd2.length < 1){
-            return res.json('Please enter your password again!');
+            res.render('register', {register_error: 'Please enter your password again'});
+            return;
         }else if(data.pwd1 !== data.pwd2){ //Two passwords not match
-            return res.json('Password does not match!');
+            res.render('register', {register_error: 'Passwords not match'});
+            return;
+        }else if(data.secret.length < 1){ //no secret code
+            res.render('register', {register_error: 'Please enter the secret code'});
+            return;
         }
 
-        connection.query(userSQL.getUserByUsername, data.username, function(err, result){ //Username already existed
-            if(typeof result !== 'undefined' && result.length !== 0){
-                //console.log(result);
-                connection.release();
-                return res.json('Username already existed!');
-            }else{
-
-                // Registration
-                connection.query(userSQL.insert, [data.username, data.pwd1], function(err, result){
-                    if(typeof result === 'undefined'){
-                        result = 'register failed!';
-                    }else{
-                        result = 'register succeeded!';
-                    }
-                    res.json(result);
+        if(data.secret === 'student'){ //If user is student
+            connection.query(userSQL.get_student_by_username, data.username,function(err, result){
+                if(typeof result !== 'undefined' && result.length !== 0){ //Username already existed
                     connection.release();
-                });
-            }
-        });
+                    res.render('register', {register_error: 'Username already existed'});
+                }else{
+                    connection.query(userSQL.insert_student, [data.username, data.pwd1], function(err, result){
+                        if(typeof result === 'undefined'){
 
+                            res.json('Register failed!');
+                        }else{
+                            setTimeout(function(){
+                                res.redirect('login');
+                                //res.render('login', {login_error: ''})
+                            }, 1000);
 
-        // Registration
-        // connection.query(userSQL.insert, [data.username, data.pwd1], function(err, result){
-        //     if(typeof result === 'undefined'){
-        //         result = 'register failed!';
-        //     }else{
-        //         result = 'register succeeded!';
-        //     }
-        //     res.json(result);
-        //     connection.release();
-        // });
+                        }
+                        connection.release();
+                    });
+                }
+            });
+        }else if(data.secret === 'teacher'){ //If user is teacher
+            connection.query(userSQL.get_teacher_by_username, data.username,function(err, result){
+                if(typeof result !== 'undefined' && result.length !== 0){ //Username already existed
+                    connection.release();
+                    res.render('register', {register_error: 'Username already existed'});
+                }else{
+                    connection.query(userSQL.insert_teacher, [data.username, data.pwd1], function(err, result){
+                        if(typeof result === 'undefined'){
+                            res.json('Register failed!');
+                        }else{
+                            setTimeout(function(){
+                                res.redirect('login');
+                                //res.render('login', {login_error: ''})
+                            }, 1000);
 
+                        }
+                        connection.release();
+                    });
+                }
+            });
+        }else{ //Secret code not correct
+            res.render('register', {register_error: 'Secret code not correct'});
+        }
 
     });
-    
 
 });
 
