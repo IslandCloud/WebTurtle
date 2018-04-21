@@ -672,14 +672,23 @@ $("#repeatClear").click(function(){
 
 $("#screenshot").click(function(){
 
-
     var url = graphCanvas.toDataURL();
+    var date = new Date();
+    var filename = ''+ date.getMonth() + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds()+'.png';
+    downloadScreenshot(url, filename);
+
     console.log(url);
 });
 
-// $("#loginButton").on('click', function(){
-//     $.get();
-// });
+function downloadScreenshot(url, name){
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+}
 
 
 reset();
