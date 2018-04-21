@@ -85,6 +85,12 @@ router.post('/login', function(req, res){
 
 });
 
+router.get('/logout', function(req, res){
+    req.session.destroy();
+    res.redirect('/');
+
+});
+
 
 /* Get register page*/
 router.get('/register', function(req, res){

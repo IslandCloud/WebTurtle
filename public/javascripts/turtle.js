@@ -46,6 +46,11 @@ function initialize(){
         colour: "#0000ff" //default colour of the line
     };
 
+    turtleLogo.onload = function(){
+        turtleContext.globalAlpha = 0.7;
+        turtleContext.drawImage(turtleLogo, 238, 233, 25, 35);
+    }
+
 }
 
 function centerOrigin(context){
@@ -60,17 +65,36 @@ function centerOrigin(context){
 
 function drawTurtle(){
     if(turtle.visible) {
-        turtleContext.save();
 
+        var canvaswidth = turtleCanvas.width;
+        var angle = toRad(270-turtle.angle);
+        var x = turtle.x;
+        var y = turtle.y;
+        turtleContext.clearRect(0, 0, turtleContext.canvas.width, turtleContext.canvas.height);
+
+        turtleContext.save();
+        turtleContext.globalAlpha = 0.7;
         centerOrigin(turtleContext);
         var width = turtle.width;
         turtleContext.fillRect(turtle.x - width / 2, turtle.y - width / 2, width, width);
+        turtleContext.restore();
+
+
+        turtleContext.save();
+
+        centerOrigin(turtleContext);
+        turtleContext.translate(x, y);
+        turtleContext.rotate(-angle);
+        // turtleContext.translate(-x, -y);
+        // turtleContext.translate(x, y);
+        // turtleContext.drawImage(turtleLogo, turtle.x + 236.5, 232 - turtle.y, 25, 35);
+        turtleContext.drawImage(turtleLogo, -25/2, -35/2, 25, 35);
+        // turtleContext.drawImage(turtleLogo, 0, 0, 25, 35);
 
         turtleContext.restore();
 
-        turtleLogo.onload = function(){
-            turtleContext.drawImage(this, 238, 233, 25, 35);
-        };
+
+
     }
 }
 
@@ -138,6 +162,10 @@ function right(angle){
         functionBox.html(functionBox.html() + "right(" + angle + ")  ")
     }
 
+
+    drawTurtle();
+
+
 }
 
 function left(angle){
@@ -162,6 +190,8 @@ function left(angle){
         funcRecordTemp.data.push(angle);
         functionBox.html(functionBox.html() + "left(" + angle + ")  ")
     }
+
+    drawTurtle();
 
 }
 
@@ -439,9 +469,10 @@ function reset(){
 
     // centerOrigin(graphContext);
     initialize();
+    drawGrid50();
     drawTurtle();
 
-    drawGrid50();
+
 }
 
 
