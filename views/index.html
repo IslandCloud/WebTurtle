@@ -15,14 +15,24 @@
         <tbody>
         <tr>
             <td id="topleft">
-            <p><%= username%></p>
+                <% if(isloggedin){ %>
+                <p>Hello, <a href="userpage"><%= username%></a></p>
+                <% } %>
             </td>
             <td id="topright">
                 <nobr id="buttonbar">
-                    <button id="screenshot">Screenshot</button>
-                    <button id="registerButton" onclick="location.href='/register'">Register</button>
-                    <button id="loginButton" onclick="location.href='/login' ">Login</button>
-                    <button id="guide">Guide</button>
+                    <% if(isloggedin){ %>
+                        <button id="screenshot">Screenshot</button>
+                        <button id="guide">Guide</button>
+                        <button id="logout">Log Out</button>
+                    <% }else{ %>
+                        <button id="screenshot">Screenshot</button>
+                        <button id="registerButton" onclick="location.href='/register'">Register</button>
+                        <button id="loginButton" onclick="location.href='/login' ">Login</button>
+                        <button id="guide">Guide</button>
+                    <% } %>
+
+
                 </nobr>
             </td>
         </tr>

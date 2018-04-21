@@ -3,6 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var consolidate = require('consolidate');
@@ -23,12 +24,25 @@ app.engine('html', consolidate.ejs);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('islandcloud'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    name: 'islandcloud',
+    secret: 'islandcloud',
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+        maxAge: 3600 * 1000
+    }
+}));
+
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/public', express.static(path.join(__dirname, '/public')));
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
