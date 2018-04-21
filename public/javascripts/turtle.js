@@ -1,6 +1,7 @@
 var graphCanvas = $("#graphCanvas")[0];
 var graphContext = graphCanvas.getContext('2d');
 
+
 var turtleCanvas = $("#turtleCanvas")[0];
 var turtleContext = turtleCanvas.getContext('2d');
 var turtleLogo = new Image();
@@ -210,7 +211,11 @@ function clearGraphScreen(){ // clear the graph screen
     graphContext.save();
     graphContext.setTransform(1,0,0,1,0,0);
     graphContext.clearRect(0, 0, graphContext.canvas.width, graphContext.canvas.height);
+    graphContext.fillStyle = "#fff";
+    graphContext.fillRect(0, 0, 500, 500);
     graphContext.restore();
+
+
 }
 
 function changeColour(colour){
@@ -464,8 +469,11 @@ function repeatClear(){
 
 function reset(){
 
+
+
     clearGraphScreen();
     clearTurtleScreen();
+
 
     // centerOrigin(graphContext);
     initialize();
@@ -663,16 +671,10 @@ $("#repeatClear").click(function(){
 });
 
 $("#screenshot").click(function(){
-    html2canvas(document.body, {
-        allowTaint: true,
-        taintTest: true,
-        onrendered: function(canvas){
-            // document.body.appendChild(canvas);
-            var image = canvas.toDataURL("image/png");
-            var pHtml = "<img src=" + image + " />";
-            $("#html2canvas").html(pHtml);
-        }
-    });
+
+
+    var url = graphCanvas.toDataURL();
+    console.log(url);
 });
 
 // $("#loginButton").on('click', function(){
