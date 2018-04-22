@@ -36,6 +36,11 @@ router.get('/login', function(req, res){
     res.render('login', {login_error: ""});
 });
 
+router.get('/teacherlogin', function(req, res){
+
+    res.render('teacherlogin', {login_error: ""});
+});
+
 router.post('/login', function(req, res){
     var data = req.body;
 
@@ -51,19 +56,6 @@ router.post('/login', function(req, res){
         connection.query(userSQL.get_student_by_username, data.username, function(err, result){
             if(typeof result === 'undefined' || result.length === 0){ //Username not exist in student table
 
-                // connection.query(userSQL.get_teacher_by_username, data.username, function(err, result){ //Find in teacher
-                //     if(typeof result === 'undefined' || result.length === 0){ //Username not exist in both tables
-                //         //connection.release();
-                //         res.render('login', {login_error: "username does not exist"});
-                //     }else{ //Username exists in teacher table
-                //         if(result[0]['pwd'] === data.pwd){
-                //             res.render('index', {username: 'Hello, ' + data.username});
-                //         }else{
-                //             res.render('login', {login_error: "password not correct!"});
-                //         }
-                //     }
-                //
-                // });
                 res.render('login', {login_error: "username does not exist"});
 
             }else{ //Username exists in student table
@@ -82,6 +74,63 @@ router.post('/login', function(req, res){
         });
 
     });
+
+});
+
+router.post('/teacherlogin', function(req, res){
+    var data = req.body;
+
+    if(data.username.length < 1){ //Empty username
+        res.render('teacherlogin', {login_error: "please enter your username"});
+        return;
+    }else if(data.pwd.length < 1){ //Empty password
+        res.render('teacherlogin', {login_error: "please enter your password"});
+        return;
+    }
+
+    pool.getConnection(function(err, connection){
+        connection.query(userSQL.get_teacher_by_username, data.username, function(err, result){
+            if(typeof result === 'undefined' || result.length === 0){ //Username not exist in teacher table
+                res.render('teacherlogin', {login_error: "username does not exist"});
+            }else{ //Username exists in student table
+                if(result[0]['pwd'] === data.pwd){
+                    //for session
+                    req.session.user = data.username;
+                    res.redirect('/teacherpage');
+                }else{
+                    res.render('teacherlogin', {login_error: "password not correct!"});
+                }
+            }
+            connection.release();
+        });
+
+    });
+
+});
+
+router.get('/teacherpage', function(req, res){
+    // var ret = [];
+    pool.getConnection(function(err, connection){
+        connection.query(userSQL.select_available_students, function(err, result){
+            if(err){
+                throw err;
+            }
+            var len = result.length;
+            // var string = JSON.stringify(result);
+            var jsonobj = JSON.parse(JSON.stringify(result));
+            // console.log(b[0].username);
+
+            // res.render('teacherpage', {
+            //     username: req.session.user
+                // result: a
+            res.render('teacherpage', {
+                username: req.session.user,
+                result: jsonobj,
+                length: len
+            });
+        });
+    });
+
 
 });
 
@@ -105,6 +154,12 @@ router.post('/register', function(req, res){
         if(data.username.length < 1){ //Empty username
             res.render('register', {register_error: 'Username cannot be empty'});
             return;
+        }else if(data.firstname.length < 1){
+            res.render('register', {register_error: 'Firstname cannot be empty'});
+            return;
+        }else if(data.lastname.length < 1){
+            res.render('register', {register_error: 'Lastname cannot be empty'});
+            return;
         }else if(data.pwd1.length < 1){
             res.render('register', {register_error: 'Password cannot be empty'});
             return;
@@ -125,16 +180,13 @@ router.post('/register', function(req, res){
                     connection.release();
                     res.render('register', {register_error: 'Username already existed'});
                 }else{
-                    connection.query(userSQL.insert_student, [data.username, data.pwd1], function(err, result){
+                    connection.query(userSQL.insert_student, [data.username, data.pwd1, data.firstname, data.lastname], function(err, result){
                         if(typeof result === 'undefined'){
-
                             res.json('Register failed!');
                         }else{
                             setTimeout(function(){
                                 res.redirect('login');
-                                //res.render('login', {login_error: ''})
                             }, 1000);
-
                         }
                         connection.release();
                     });
