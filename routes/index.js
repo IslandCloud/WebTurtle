@@ -147,9 +147,6 @@ router.post('/teacherpage', function(req, res){
 
     var data = req.body;
     var class_id = req.session.class_id;
-    console.log("class: " + class_id);
-    console.log("kick: "+data.kickid);
-    console.log("add: "+data.addid);
     if(data.addid === undefined && data.kickid !== undefined){
         pool.getConnection(function(err, connection){
             connection.query(userSQL.kick_from_class, data.kickid, function(err, result){
@@ -240,24 +237,65 @@ router.post('/register', function(req, res){
                     });
                 }
             });
-        }else if(data.secret === 'teacher'){ //If user is teacher
-            connection.query(userSQL.get_teacher_by_username, data.username,function(err, result){
-                if(typeof result !== 'undefined' && result.length !== 0){ //Username already existed
-                    connection.release();
-                    res.render('register', {register_error: 'Username already existed'});
-                }else{
-                    connection.query(userSQL.insert_teacher, [data.username, data.pwd1], function(err, result){
-                        if(typeof result === 'undefined'){
-                            res.json('Register failed!');
-                        }else{
-                            setTimeout(function(){
-                                res.redirect('login');
-                                //res.render('login', {login_error: ''})
-                            }, 1000);
+        }else{ //Secret code not correct
+            res.render('register', {register_error: 'Secret code not correct'});
+        }
 
+    });
+
+});
+
+router.get('/teacherregister', function(req, res){
+    res.render('teacherregister', {register_error: ''});
+});
+
+
+router.post('/teacherregister', function(req, res){
+    pool.getConnection(function(err, connection){
+        var data = req.body;
+
+        if(data.username.length < 1){ //Empty username
+            res.render('teacherregister', {register_error: 'Username cannot be empty'});
+        }else if(data.pwd1.length < 1){
+            res.render('teacherregister', {register_error: 'Password cannot be empty'});
+        }else if(data.pwd2.length < 1){
+            res.render('teacherregister', {register_error: 'Please enter your password again'});
+        }else if(data.pwd1 !== data.pwd2){ //Two passwords not match
+            res.render('teacherregister', {register_error: 'Password does not match'});
+        }else if(data.classid.length < 1){
+            res.render('teacherregister', {register_error: 'Please enter your classroom id'});
+        }else if(data.secret.length < 1){ //no secret code
+            res.render('teacherregister', {register_error: 'Please enter the secret code'});
+        }
+
+        if(data.secret === 'teacher'){ //If user is teacher
+            connection.query(userSQL.get_teacher_by_username, data.username, function(err, result){
+                if(typeof result !== 'undefined' && result.length !== 0){ //Username already existed
+                    // connection.release();
+                    res.render('teacherregister', {register_error: 'Username already existed'});
+                }else{
+
+                    connection.query(userSQL.select_teacher_by_classid, data.classid, function(err, result){
+                        if(typeof result !== 'undefined' && result.length !== 0){ //classroom id already existed
+                            // connection.release();
+                            res.render('teacherregister', {register_error: 'Classroom id already existed'});
+                        }else{
+
+                            connection.query(userSQL.insert_teacher, [data.username, data.pwd1, data.classid], function(err, result){
+                                if(typeof result === 'undefined'){
+                                    res.json('Register failed!');
+                                }else{
+                                    setTimeout(function(){
+                                        res.redirect('teacherlogin');
+                                    }, 1000);
+
+                                }
+                                connection.release();
+                            });
                         }
-                        connection.release();
+
                     });
+
                 }
             });
         }else{ //Secret code not correct
@@ -267,5 +305,7 @@ router.post('/register', function(req, res){
     });
 
 });
+
+
 
 module.exports = router;
