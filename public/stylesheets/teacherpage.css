@@ -1,0 +1,63 @@
+/* Table Head */
+.student_table thead th {
+    background-color: rgb(81, 130, 187);
+    color: #fff;
+    border-bottom-width: 0;
+}
+
+/* Column Style */
+.student_table td {
+    color: #000;
+}
+
+/* Heading and Column Style */
+.student_table tr, .student_table th {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(81, 130, 187);
+}
+
+/* Padding and font style */
+.student_table td, .student_table th {
+    padding: 5px 10px;
+    font-size: 12px;
+    font-family: Verdana;
+    font-weight: bold;
+}
+
+#leftColumn{
+    position: relative;
+    top: 50px;
+    left: -100px;
+}
+
+#rightColumn{
+    position: relative;
+    top: 50px;
+    left: 100px;
+}
+
+#leftColumn button{
+    border: none;
+    background-color: #ffffff;
+    -moz-appearance: none;
+    box-shadow: 0 0 7px gray;
+    font-size: 16px;
+    margin: 5px;
+    display: inline-block;
+    line-height: 24px;
+    vertical-align: middle;
+    height: 28px;
+    padding: 2px 8px;
+    color: #222222;
+    border-radius: 8px;
+    font-family: Verdana;
+    cursor: pointer;
+}
+
+#classid{
+    position: relative;
+    top: 50px;
+    text-align: center;
+}
+

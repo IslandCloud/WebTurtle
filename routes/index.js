@@ -96,6 +96,7 @@ router.post('/teacherlogin', function(req, res){
                 if(result[0]['pwd'] === data.pwd){
                     //for session
                     req.session.user = data.username;
+                    req.session.class_id = result[0]['class_id'];
                     res.redirect('/teacherpage');
                 }else{
                     res.render('teacherlogin', {login_error: "password not correct!"});
@@ -109,27 +110,74 @@ router.post('/teacherlogin', function(req, res){
 });
 
 router.get('/teacherpage', function(req, res){
-    // var ret = [];
+
     pool.getConnection(function(err, connection){
         connection.query(userSQL.select_available_students, function(err, result){
             if(err){
                 throw err;
             }
-            var len = result.length;
-            // var string = JSON.stringify(result);
-            var jsonobj = JSON.parse(JSON.stringify(result));
-            // console.log(b[0].username);
+            var length1 = result.length;
+            var available_student = JSON.parse(JSON.stringify(result));
 
-            // res.render('teacherpage', {
-            //     username: req.session.user
-                // result: a
-            res.render('teacherpage', {
-                username: req.session.user,
-                result: jsonobj,
-                length: len
+
+            connection.query(userSQL.select_students_in_class, req.session.class_id, function(err, result){
+                if(err){
+                    throw err;
+                }
+                var length2 = result.length;
+                var current_student = JSON.parse(JSON.stringify(result));
+
+                res.render('teacherpage', {
+                    username: req.session.user,
+                    result1: available_student,
+                    length1: length1,
+                    class_id: req.session.class_id,
+                    length2: length2,
+                    result2: current_student
+                });
             });
+
         });
+
     });
+
+});
+
+router.post('/teacherpage', function(req, res){
+
+    var data = req.body;
+    var class_id = req.session.class_id;
+    console.log("class: " + class_id);
+    console.log("kick: "+data.kickid);
+    console.log("add: "+data.addid);
+    if(data.addid === undefined && data.kickid !== undefined){
+        pool.getConnection(function(err, connection){
+            connection.query(userSQL.kick_from_class, data.kickid, function(err, result){
+                if(err){
+                    throw err;
+                }
+                if(result.length === 0){
+                    console.log('Kick failed!');
+                }else{
+                    res.redirect('/teacherpage');
+                }
+            })
+        });
+    }else if(data.kickid === undefined && data.addid !== undefined){
+        var add = [class_id, data.addid];
+        pool.getConnection(function(err, connection){
+            connection.query(userSQL.add_to_class, add, function(err, result){
+                if(err){
+                    throw err;
+                }
+                if(result.length === 0){
+                    console.log('Add failed!');
+                }else{
+                    res.redirect('/teacherpage');
+                }
+            })
+        });
+    }
 
 
 });

@@ -9,7 +9,7 @@ var ejs = require('ejs');
 var consolidate = require('consolidate');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
+// var users = require('./routes/users');
 
 var app = express();
 
@@ -39,7 +39,6 @@ app.use(session({
 
 
 app.use('/', index);
-app.use('/users', users);
 app.use('/public', express.static(path.join(__dirname, '/public')));
 
 

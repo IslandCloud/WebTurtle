@@ -4,40 +4,8 @@
     <meta charset="UTF-8">
     <title>Teacher Page</title>
     <link type="text/css" rel="stylesheet" href="/stylesheets/turtle.css">
-
-    <style type="text/css">
-        /* Table Head */
-        #student_table thead th {
-            background-color: rgb(81, 130, 187);
-            color: #fff;
-            border-bottom-width: 0;
-        }
-
-        /* Column Style */
-        #student_table td {
-            color: #000;
-        }
-        /* Heading and Column Style */
-        #student_table tr, #student_table th {
-            border-width: 1px;
-            border-style: solid;
-            border-color: rgb(81, 130, 187);
-        }
-
-        /* Padding and font style */
-        #student_table td, #student_table th {
-            padding: 5px 10px;
-            font-size: 12px;
-            font-family: Verdana;
-            font-weight: bold;
-        }
-
-        #leftColumn{
-            position: relative;
-            top: 50px;
-            left: -100px;
-        }
-    </style>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/teacherpage.css">
+    <script type="text/javascript" src="/javascripts/jquery-1.6.4.min.js"></script>
 
 </head>
 <body>
@@ -58,33 +26,64 @@
         </table>
     </div>
 
+    <div id="classid">
+        <p>You are the teacher of class <b><%= class_id%></b></p>
+    </div>
+
     <div id="leftColumn">
-        <table id="student_table">
-            <caption>Students not in a class</caption>
-            <thead>
+        <table class="student_table" id="available_student_table">
+            <form action="/teacherpage" method="POST">
+                <caption>Students not in a class</caption>
+                <thead>
+                    <tr>
+                        <th>student_id</th>
+                        <th>firstname</th>
+                        <th>lastname</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <% for(var i = 0; i < length1; i++){ %>
+                <tbody>
+                    <tr>
+                        <th><%= result1[i].student_id %></th>
+                        <th><%= result1[i].firstname %></th>
+                        <th><%= result1[i].lastname %></th>
+                        <th><button type="submit" name="addid" value="<%= result1[i].student_id %>">Add me into class</button></th>
+                    </tr>
+                </tbody>
+                <% } %>
+            </form>
+        </table>
+    </div>
+
+    <div id="rightColumn">
+        <table class="student_table" id="current_student_table">
+            <form action="/teacherpage" method="POST">
+                <caption>Students in your class</caption>
+                <thead>
                 <tr>
                     <th>student_id</th>
                     <th>firstname</th>
                     <th>lastname</th>
                     <th></th>
                 </tr>
-            </thead>
+                </thead>
 
-            <% for(var i = 0; i < length; i++){ %>
-            <tbody>
+                <% for(var i = 0; i < length2; i++){ %>
+                <tbody>
                 <tr>
-                    <th><%= result[i].student_id %></th>
-                    <th><%= result[i].firstname %></th>
-                    <th><%= result[i].lastname %></th>
-                    <th><button>Add me to class</button></th>
+                    <th><%= result2[i].student_id %></th>
+                    <th><%= result2[i].firstname %></th>
+                    <th><%= result2[i].lastname %></th>
+                    <th><button type="submit" name="kickid" value="<%= result2[i].student_id %>">Kick</button></th>
                 </tr>
-            </tbody>
-            <% } %>
-
+                </tbody>
+                <% } %>
+            </form>
         </table>
-
-
     </div>
+
 
 </body>
 </html>
