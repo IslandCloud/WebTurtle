@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <script type="text/javascript" src="/javascripts/jquery-1.6.4.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/turtle.css">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/userpage.css">
+</head>
+
+
+<body>
+<div id="page">
+    <table id="top">
+        <tbody>
+        <tr>
+            <td id="topleft">
+
+                <p>Hello, <a href="userpage"><%= username%></a></p>
+
+            </td>
+            <td id="topright">
+                <nobr id="buttonbar">
+
+                    <button id="back" onclick="location.href='/'">Back</button>
+                    <button id="logout" onclick="location.href='/logout'">Log Out</button>
+
+                </nobr>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <div id="classid">
+        <% if(length2 != null){ %>
+        <p>You are in class <b><%= class_id%></b></p>
+        <% }else{ %>
+        <p>You are not in any class</p>
+        <% } %>
+    </div>
+
+
+    <div id="leftColumn">
+        <table class="student_table" id="available_student_table">
+
+            <p>Your uploaded files:</p>
+            <% if(length1 != 0){ %>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>file</th>
+                </tr>
+            </thead>
+            <% } %>
+
+            <% for(var i = 0; i < length1; i++){ %>
+            <tbody>
+                <tr>
+                    <th><%= (i+1) %></th>
+                    <th><a href="<%= result1[i].filepath %>">View</a></th>
+                </tr>
+            </tbody>
+            <% } %>
+
+        </table>
+    </div>
+
+    <div id="middleColumn">
+        <table class="student_table">
+            <p>Your class tasks:</p>
+
+            <% if(length2 != null){ %>
+                <% if(length2 != 0){ %>
+                <thead>
+                <tr>
+                    <th>filename</th>
+                    <th>view</th>
+                </tr>
+                </thead>
+                <% } %>
+
+                <% for(var i = 0; i < length2; i++){ %>
+                <tbody>
+                <tr>
+                    <th><%= result2[i].filename %></th>
+                    <th><a href="<%= result2[i].filepath %>">View</a></th>
+                </tr>
+                </tbody>
+                <% } %>
+            <% } %>
+
+        </table>
+    </div>
+
+    <% if(length2 != null){ %>
+    <div id="rightColumn">
+        <p>File Upload:</p>
+        <form action="/userpage" method="POST" enctype="multipart/form-data">
+            <input type="file" name="myfile" />
+            <br />
+            <input type="submit" value="Upload" />
+
+        </form>
+    </div>
+    <% } %>
+
+</div>
+
+</body>
+</html>

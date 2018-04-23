@@ -49,7 +49,7 @@
                         <th><%= result1[i].student_id %></th>
                         <th><%= result1[i].firstname %></th>
                         <th><%= result1[i].lastname %></th>
-                        <th><button type="submit" name="addid" value="<%= result1[i].student_id %>">Add me into class</button></th>
+                        <th><button type="submit" name="addid" value="<%= result1[i].student_id %>">Add</button></th>
                     </tr>
                 </tbody>
                 <% } %>
@@ -57,7 +57,7 @@
         </table>
     </div>
 
-    <div id="rightColumn">
+    <div id="middleColumn">
         <table class="student_table" id="current_student_table">
             <form action="/teacherpage" method="POST">
                 <caption>Students in your class</caption>
@@ -82,6 +82,42 @@
                 <% } %>
             </form>
         </table>
+    </div>
+
+    <div id="middleColumn2">
+        <table class="student_table">
+            <form action="/teacherpage" method="POST">
+                <caption>Your tasks</caption>
+                <thead>
+                <tr>
+                    <th>filename</th>
+                    <th>view</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <% for(var i = 0; i < length3; i++){ %>
+                <tbody>
+                <tr>
+                    <th><%= result3[i].filename %></th>
+                    <th><a href="<%= result3[i].filepath %>">View</a></th>
+                    <th><button type="submit" name="removename" value="<%= result3[i].filename %>">Remove</button></th>
+                </tr>
+                </tbody>
+                <% } %>
+
+            </form>
+        </table>
+    </div>
+
+    <div id="rightColumn">
+        <p>File Upload:</p>
+        <form action="/teacherupload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="myfile" />
+            <br />
+            <input type="submit" value="Upload" />
+
+        </form>
     </div>
 
 

@@ -1,4 +1,6 @@
 var express = require('express');
+var fs = require('fs');
+var multer = require('multer');
 var router = express.Router();
 
 var mysql = require('mysql');
@@ -26,9 +28,9 @@ router.get('/', function(req, res) {
     }
 });
 
-router.get('/index', function(req, res) {
-    res.render('index.html', {username: ''});
-});
+// router.get('/index', function(req, res) {
+//     res.render('index.html', {username: ''});
+// });
 
 
 /* Get login page*/
@@ -63,9 +65,9 @@ router.post('/login', function(req, res){
 
                     //for session
                     req.session.user = data.username;
+                    req.session.student_class_id = result[0]['class_id'];
+                    req.session.student_id = result[0]['student_id'];
                     res.redirect('/');
-                    // res.render('index', {username: 'Hello, ' + data.username});
-
                 }else{
                     res.render('login', {login_error: "password not correct!"});
                 }
@@ -127,14 +129,24 @@ router.get('/teacherpage', function(req, res){
                 var length2 = result.length;
                 var current_student = JSON.parse(JSON.stringify(result));
 
-                res.render('teacherpage', {
-                    username: req.session.user,
-                    result1: available_student,
-                    length1: length1,
-                    class_id: req.session.class_id,
-                    length2: length2,
-                    result2: current_student
+                connection.query(userSQL.select_teacher_upload, req.session.class_id, function(err, result){
+
+                    var length3 = result.length;
+                    var result3 = JSON.parse(JSON.stringify(result));
+
+                    res.render('teacherpage', {
+                        username: req.session.user,
+                        result1: available_student,
+                        length1: length1,
+                        class_id: req.session.class_id,
+                        length2: length2,
+                        result2: current_student,
+                        length3: length3,
+                        result3: result3
+                    });
                 });
+
+
             });
 
         });
@@ -147,7 +159,20 @@ router.post('/teacherpage', function(req, res){
 
     var data = req.body;
     var class_id = req.session.class_id;
-    if(data.addid === undefined && data.kickid !== undefined){
+    if(data.addid === undefined && data.kickid === undefined && data.removename !== undefined){
+        pool.getConnection(function(err, connection){
+            connection.query(userSQL.delete_teacher_upload, data.removename, function(err, result){
+                if(err){
+                    throw err;
+                }
+                if(result.length === 0){
+                    console.log('Delete failed!');
+                }else{
+                    res.redirect('/teacherpage');
+                }
+            })
+        });
+    }else if(data.addid === undefined && data.kickid !== undefined){
         pool.getConnection(function(err, connection){
             connection.query(userSQL.kick_from_class, data.kickid, function(err, result){
                 if(err){
@@ -306,6 +331,110 @@ router.post('/teacherregister', function(req, res){
 
 });
 
+
+// For file upload
+var upload = multer({ dest: './public/upload' });
+
+router.get('/userpage', function(req, res){
+
+    pool.getConnection(function(err, connection){
+        connection.query(userSQL.select_student_upload, req.session.student_id, function(err, result){
+            if(err){
+                throw err;
+            }
+            var length1 = result.length;
+            var result1 = JSON.parse(JSON.stringify(result));
+
+            if(req.session.student_class_id){
+                connection.query(userSQL.select_teacher_upload, req.session.student_class_id, function(err, result){
+                    if(err){
+                        throw err;
+                    }
+                    var length2 = result.length;
+                    var result2 = JSON.parse(JSON.stringify(result));
+
+                    res.render('userpage', {
+                        username: req.session.user,
+                        length1: length1,
+                        result1: result1,
+                        length2: length2,
+                        result2: result2,
+                        class_id: req.session.student_class_id
+                    });
+                });
+            }else{
+                res.render('userpage', {
+                    username: req.session.user,
+                    length1: length1,
+                    result1: result1,
+                    length2: null,
+                    result2: null,
+                    class_id: null
+                });
+            }
+
+        });
+    });
+
+
+});
+
+router.post('/userpage', upload.single('myfile'), function(req, res){
+
+    var file = req.file;
+    var name=file.originalname;
+    var nameArray=name.split('');
+    var nameMime=[];
+    var l=nameArray.pop();
+    nameMime.unshift(l);
+    while(nameArray.length!==0&&l!=='.'){
+        l=nameArray.pop();
+        nameMime.unshift(l);
+    }
+    var Mime=nameMime.join('');
+
+    fs.renameSync('./public/upload/'+file.filename,'./public/upload/'+file.filename+Mime);
+
+    var filepath = file.destination.split(".")[1] + '/' + file.filename + Mime;
+
+    pool.getConnection(function(err, connection){
+        connection.query(userSQL.insert_student_upload, [req.session.student_id, req.session.student_class_id, filepath], function(err, result){
+            if(err){
+                throw err;
+            }
+            res.redirect('userpage');
+        })
+    });
+
+});
+
+router.post('/teacherupload', upload.single('myfile'), function(req, res){
+    var file = req.file;
+    var name=file.originalname;
+    var nameArray=name.split('');
+    var nameMime=[];
+    var l=nameArray.pop();
+    nameMime.unshift(l);
+    while(nameArray.length!==0&&l!=='.'){
+        l=nameArray.pop();
+        nameMime.unshift(l);
+    }
+    var Mime=nameMime.join('');
+
+    fs.renameSync('./public/upload/'+file.filename,'./public/upload/'+file.filename+Mime);
+
+    var filepath = file.destination.split(".")[1] + '/' + file.filename + Mime;
+
+    // console.log(file);
+    pool.getConnection(function(err, connection){
+        connection.query(userSQL.insert_teacher_upload, [req.session.class_id, filepath, file.originalname], function(err, result){
+            if(err){
+                throw err;
+            }
+            res.redirect('teacherpage');
+        })
+    });
+});
 
 
 module.exports = router;
