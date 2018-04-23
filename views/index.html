@@ -22,16 +22,12 @@
                 <nobr id="buttonbar">
                     <% if(isloggedin){ %>
                         <button id="screenshot">Screenshot</button>
-                        <button id="guide">Guide</button>
                         <button id="logout" onclick="location.href='/logout'">Log Out</button>
                     <% }else{ %>
                         <button id="screenshot">Screenshot</button>
                         <button id="registerButton" onclick="location.href='/register'">Register</button>
                         <button id="loginButton" onclick="location.href='/login' ">Login</button>
-                        <button id="guide">Guide</button>
                     <% } %>
-
-
                 </nobr>
             </td>
         </tr>
